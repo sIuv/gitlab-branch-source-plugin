@@ -93,10 +93,11 @@ public class GitLabHookCreator {
         if (credentials != null) {
             try {
                 GitLabApi gitLabApi = new GitLabApi(
-                        server.getServerUrl(),
-                        credentials.getToken().getPlainText(),
-                        null,
-                        getProxyConfig(server.getServerUrl()));
+                    server.getServerUrl(),
+                    credentials.getToken().getPlainText(),
+                    null,
+                    getProxyConfig(server.getServerUrl()));
+                gitLabApi.setRequestTimeout(server.getConnectTimout(), server.getRequestTimout());
                 createWebHookWhenMissing(gitLabApi, source.getProjectPath(), hookUrl, secretToken);
             } catch (GitLabApiException e) {
                 LOGGER.log(
@@ -137,16 +138,17 @@ public class GitLabHookCreator {
         String systemHookUrl = getHookUrl(server, false);
         try {
             GitLabApi gitLabApi = new GitLabApi(
-                    server.getServerUrl(),
-                    credentials.getToken().getPlainText(),
-                    null,
-                    getProxyConfig(server.getServerUrl()));
+                server.getServerUrl(),
+                credentials.getToken().getPlainText(),
+                null,
+                getProxyConfig(server.getServerUrl()));
+            gitLabApi.setRequestTimeout(server.getConnectTimout(), server.getRequestTimout());
             SystemHook systemHook = gitLabApi
-                    .getSystemHooksApi()
-                    .getSystemHookStream()
-                    .filter(hook -> systemHookUrl.equals(hook.getUrl()))
-                    .findFirst()
-                    .orElse(null);
+                .getSystemHooksApi()
+                .getSystemHookStream()
+                .filter(hook -> systemHookUrl.equals(hook.getUrl()))
+                .findFirst()
+                .orElse(null);
             if (systemHook == null) {
                 gitLabApi
                         .getSystemHooksApi()

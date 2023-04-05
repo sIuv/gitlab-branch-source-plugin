@@ -255,6 +255,10 @@ public class GitLabSCMNavigator extends SCMNavigator {
                 String serverUrl = getServerUrl(server);
                 webhookGitLabApi = new GitLabApi(
                         serverUrl, webHookCredentials.getToken().getPlainText(), null, getProxyConfig(serverUrl));
+                if (server != null) {
+                    webhookGitLabApi.setRequestTimeout(server.getConnectTimout(),
+                        server.getRequestTimout());
+                }
                 webHookUrl = GitLabHookCreator.getHookUrl(server, true);
             }
             for (Project p : projects) {
@@ -264,10 +268,8 @@ public class GitLabSCMNavigator extends SCMNavigator {
                 String projectName = getProjectName(gitLabApi, request.withProjectNamingStrategy(), p);
                 getNavigatorProjects().add(projectPathWithNamespace);
                 if (StringUtils.isEmpty(p.getDefaultBranch())) {
-                    observer.getListener()
-                            .getLogger()
-                            .format(
-                                    "%nIgnoring project with empty repository %s%n",
+                    observer.getListener().getLogger()
+                            .format("%nIgnoring project with empty repository %s%n",
                                     HyperlinkNote.encodeTo(p.getWebUrl(), p.getName()));
                     continue;
                 }

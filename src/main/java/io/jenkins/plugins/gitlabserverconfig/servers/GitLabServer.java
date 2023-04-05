@@ -206,6 +206,20 @@ public class GitLabServer extends AbstractDescribableImpl<GitLabServer> {
     }
 
     /**
+     * Returns the connection timeout to be used while trying to create a connection.
+     */
+    public Integer getConnectTimout() {
+        return 60 * 1000;
+    }
+
+    /**
+     * Returns the request timeout to be used while trying to perform a request.
+     */
+    public Integer getRequestTimout() {
+        return 60 * 1000;
+    }
+
+    /**
      * Returns {@code true} if Jenkins is supposed to auto-manage web hooks for this
      * end-point.
      *
